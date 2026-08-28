@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ "Editar" if editando else "Novo" }} Produto — Adega Premium</title>
+    <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <main class="conteudo">
+            <header>
+                <div class="logo">
+                    <div class="icone"><i class="fa-solid fa-wine-glass"></i></div>
+                    <div>
+                        <h2>Adega Premium</h2>
+                        <span>Sistema PDV</span>
+                    </div>
+                </div>
+                <div class="data">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="relogio">--:--</span>
+                    <span>•</span>
+                    <span id="data-atual">-- de -- de ----</span>
+                </div>
+            </header>
+
+            <nav>
+                <a href="/"><i class="fa-solid fa-cart-shopping"></i> Ponto de Venda</a>
+                <a href="/movimentacoes"><i class="fa-solid fa-chart-line"></i> Histórico</a>
+                <a href="/produtos" class="ativo"><i class="fa-solid fa-box"></i> Produtos</a>
+                <a href="/clientes"><i class="fa-solid fa-users"></i> Clientes</a>
+                <a href="/auth/logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+            </nav>
+
+            <div class="titulo-pagina">
+                <h1>{{ "Editar Produto" if editando else "Novo Produto" }}</h1>
+            </div>
+
+            {% if erro %}
+                <div style="background: rgba(239, 68, 68, 0.1 ); color: #ef4444; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{ erro }}
+                </div>
+            {% endif %}
+
+            <form action="{{ '/produtos/' + editando.id|string + '/editar' if editando else '/produtos/novo' }}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="card-form">
+
+                <div class="campo">
+                    <label for="nome">Nome do Produto</label>
+                    <input type="text" 
+                           id="nome" 
+                           name="nome" 
+                           value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
+                           required 
+                           placeholder="Ex: Brahma Duplo Malte">
+                </div>
+
+                <div class="campo">
+                    <label for="categoria">Categoria</label>
+                    <select id="categoria" name="categoria_id" required>
+                        <option value="0">Sem categoria</option>
+                        {% for c in categorias %}
+                            <option value="{{ c.id }}"
+                                {{ 'selected' if (editando and editando.categoria_id == c.id) or (valores and valores.categoria_id == c.id) else '' }}>
+                                {{ c.nome }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="preco">Preço (R$)</label>
+                    <input type="number" 
+                           id="preco" 
+                           name="preco" 
+                           step="0.01" 
+                           min="0" 
+                           value="{{ editando.preco if editando else (valores.preco if valores else '0.00') }}"
+                           required 
+                           placeholder="0.00">
+                </div>
+
+                <div class="campo">
+                    <label for="estoque">Estoque (unidades)</label>
+                    <input type="number" 
+                           id="estoque" 
+                           name="estoque_atual" 
+                           min="0" 
+                           value="{{ editando.estoque_atual if editando else (valores.estoque_atual if valores else '0') }}"
+                           required 
+                           placeholder="0">
+                </div>
+
+                <!-- Exibição da imagem atual na edição -->
+                {% if editando and editando.imagem_path %}
+                    <div class="campo">
+                        <label>Imagem Atual</label>
+                        <img src="{{ editando.imagem_url }}" 
+                             alt="{{ editando.nome }}" 
+                             width="120" 
+                             style="object-fit:cover; border-radius: 8px; border: 2px solid #3f3f46;">
+                    </div>
+                {% endif %}
+
+                <div class="campo">
+                    <label for="imagem">{{ "Substituir Imagem:" if editando else "Imagem do Produto:" }}</label>
+                    <input type="file" 
+                           id="imagem" 
+                           name="imagem" 
+                           accept=".jpg,.jpeg,.png,.webp">
+                </div>
+
+                <button type="submit" class="btn-salvar">
+                    <i class="fa-solid fa-check"></i> {{ "Salvar Alterações" if editando else "Criar Produto" }}
+                </button>
+                <a href="/produtos" class="btn-cancelar">Cancelar</a>
+            </form>
+
+            <p style="margin-top: 30px;">
+                <a href="/produtos" style="color: #71717a; text-decoration: none; font-size: 14px;">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar à Lista
+                </a>
+            </p>
+        </main>
+
+        <aside class="carrinho">
+            <div class="titulo">
+                <h2><i class="fa-solid fa-cart-shopping"></i> Carrinho</h2>
+                <span>0 item(s)</span>
+            </div>
+            <div class="vazio">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <h3>Carrinho vazio</h3>
+                <p>Adicione produtos para começar.</p>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Script simples para manter a data/hora atualizada no cabeçalho
+        function atualizarDataHora() {
+            const agora = new Date();
+            const horas = String(agora.getHours()).padStart(2, '0');
+            const minutos = String(agora.getMinutes()).padStart(2, '0');
+            document.getElementById('relogio').textContent = `${horas}:${minutos}`;
+
+            const opcoes = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('data-atual').textContent = agora.toLocaleDateString('pt-BR', opcoes);
+        }
+        setInterval(atualizarDataHora, 1000);
+        atualizarDataHora();
+    </script>
+</body>
+</html>

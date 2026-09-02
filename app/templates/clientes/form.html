@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 
+<<<<<<< HEAD
+{% block title %}{{ "Editar" if editando else "Novo" }} Cliente — Adega Premium{% endblock %}
+=======
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+>>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260
 
     <title>
         {{ "Editar" if editando else "Novo" }} Cliente — Nova Adega
@@ -12,6 +16,10 @@
 
 <body>
 
+<<<<<<< HEAD
+{% if erro %} <p style="color:red">{{ erro }}</p>
+{% endif %}
+=======
     <h1>
         {{ "Editar cliente" if editando else "Novo cliente" }}
     </h1>
@@ -21,12 +29,54 @@
             {{ erro }}
         </p>
     {% endif %}
+>>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260
 
     <form
         action="{{ '/clientes/' + editando.id|string + '/editar' if editando else '/clientes/novo' }}"
         method="post"
     >
 
+<<<<<<< HEAD
+```
+<label>Nome completo:
+    <input
+        type="text"
+        name="nome"
+        required
+        autofocus
+        placeholder="Digite o nome do cliente"
+        value="{{ editando.nome if editando else (valores.nome if valores else '') }}">
+</label>
+
+<br><br>
+
+<label>Telefone:
+    <input
+        type="text"
+        name="telefone"
+        placeholder="Ex: (11) 99999-9999"
+        value="{{ editando.telefone if editando else (valores.telefone if valores else '') }}">
+</label>
+
+<br><br>
+
+<label>CPF:
+    <input
+        type="text"
+        name="cpf"
+        placeholder="Ex: 000.000.000-00"
+        value="{{ editando.cpf if editando else (valores.cpf if valores else '') }}">
+</label>
+
+<br><br>
+
+<button type="submit">
+    {{ "Salvar alterações" if editando else "Cadastrar cliente" }}
+</button>
+
+<a href="/clientes">Cancelar</a>
+```
+=======
         <!-- Nome -->
         <label>
             Nome completo:
@@ -67,9 +117,13 @@
                 value="{{ editando.cpf if editando else (valores.cpf if valores else '') }}"
             >
         </label>
+>>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260
 
         <br><br>
 
+<<<<<<< HEAD
+{% endblock %}
+=======
         <button type="submit">
             {{ "Salvar alterações" if editando else "Cadastrar cliente" }}
         </button>
@@ -82,3 +136,4 @@
 
 </body>
 </html>
+>>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260

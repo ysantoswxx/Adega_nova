@@ -13,4 +13,4 @@ class Categoria(Base):
     nome = Column(String(100), nullable=False)
     ativa = Column(Boolean, default=True)
 
-    produtos = relationship("Produto", back_populates="categoria")
+    produtos = relationship("Produto", back_populates="categoria", lazy="select")

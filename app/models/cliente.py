@@ -20,3 +20,4 @@ class Cliente(Base):
 
     def __repr__(self):
         return f"<Cliente {self.nome}>"
+

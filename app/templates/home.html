@@ -3,271 +3,355 @@
 {% block title %}PDV - Adega Premium{% endblock %}
 
 {% block styles %}
+
 <link rel="stylesheet" href="/static/css/home.css">
-<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 {% endblock %}
 
 {% block content %}
 
 <div class="container">
 
-    <main class="conteudo">
+```
+<!-- CONTEÚDO PRINCIPAL -->
+<main class="conteudo">
 
-        <!-- CABEÇALHO -->
-        <header>
+    <!-- CABEÇALHO -->
+    <header>
 
-            <div class="logo">
+        <div class="logo">
 
-                <div class="icone">
-                    <i class="fa-solid fa-wine-glass"></i>
-                </div>
-
-                <div>
-                    <h2>Adega Premium</h2>
-                    <span>Sistema PDV</span>
-                </div>
-
+            <div class="icone">
+                <i class="fa-solid fa-wine-glass"></i>
             </div>
 
-            <div class="data">
-                <i class="fa-regular fa-clock"></i>
-                <span>PDV Ativo</span>
+            <div>
+                <h2>Adega Premium</h2>
+                <span>Sistema PDV</span>
             </div>
 
-        </header>
+        </div>
+
+        <div class="data">
+            <i class="fa-regular fa-clock"></i>
+            <span>PDV Ativo</span>
+        </div>
+
+    </header>
 
 
-        <!-- MENU -->
-        <nav>
+    <!-- MENU -->
+    <nav>
 
-            <a href="/" class="ativo">
-                <i class="fa-solid fa-cart-shopping"></i>
-                Ponto de Venda
-            </a>
+        <a href="/" class="ativo">
+            <i class="fa-solid fa-cart-shopping"></i>
+            Ponto de Venda
+        </a>
 
-            <a href="/movimentacoes">
-                <i class="fa-solid fa-chart-line"></i>
-                Histórico
-            </a>
+        <a href="/movimentacoes">
+            <i class="fa-solid fa-chart-line"></i>
+            Histórico
+        </a>
 
-            <a href="/produtos">
-                <i class="fa-solid fa-box"></i>
-                Produtos
-            </a>
+        <a href="/produtos">
+            <i class="fa-solid fa-box"></i>
+            Produtos
+        </a>
 
-            <a href="/clientes">
-                <i class="fa-solid fa-users"></i>
-                Clientes
-            </a>
+        <a href="/clientes">
+            <i class="fa-solid fa-users"></i>
+            Clientes
+        </a>
 
-            <a href="/auth/logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Sair
-            </a>
+        <a href="/auth/logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Sair
+        </a>
 
-        </nav>
-
-
-        <!-- PESQUISA -->
-        <section class="pesquisa">
-
-            <div class="buscar">
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <input type="text"
-                       id="input-busca"
-                       placeholder="Buscar produtos...">
-
-            </div>
-
-        </section>
+    </nav>
 
 
-        <!-- CATEGORIAS -->
-        <section class="categorias">
+    <!-- PESQUISA -->
+    <section class="pesquisa">
 
-            <button class="ativo" data-categoria="todos">
-                Todos
-            </button>
+        <div class="buscar">
 
-            <button data-categoria="Cervejas">
-                Cervejas
-            </button>
+            <i class="fa-solid fa-magnifying-glass"></i>
 
-            <button data-categoria="Refrigerantes">
-                Refrigerantes
-            </button>
+            <input
+                type="text"
+                id="input-busca"
+                placeholder="Buscar produtos..."
+            >
 
-            <button data-categoria="Combos">
-                Combos
-            </button>
+        </div>
 
-            <button data-categoria="Kit Narguilé">
-                Kit Narguilé
-            </button>
-
-            <button data-categoria="Bebidas">
-                Bebidas
-            </button>
-
-            <button data-categoria="Vinhos">
-                Vinhos
-            </button>
-
-            <button data-categoria="Doces">
-                Doces
-            </button>
-
-        </section>
+    </section>
 
 
-        <!-- PRODUTOS -->
-        <section class="conteudo-principal">
+    <!-- CATEGORIAS -->
+    <section class="categorias">
 
-            <div class="grid-produtos" id="grid-produtos">
+        <button
+            type="button"
+            class="ativo"
+            data-categoria="todos">
+            Todos
+        </button>
 
-                {% for p in produtos %}
+        <button
+            type="button"
+            data-categoria="Cervejas">
+            Cervejas
+        </button>
 
-                <div class="card-produto"
-                     data-categoria="{{ p.categoria.nome if p.categoria else 'Sem categoria' }}"
-                     data-nome="{{ p.nome }}">
+        <button
+            type="button"
+            data-categoria="Refrigerantes">
+            Refrigerantes
+        </button>
 
-                    <div class="card-img">
+        <button
+            type="button"
+            data-categoria="Combos">
+            Combos
+        </button>
 
-                        <img src="{{ p.imagem_url }}"
-                             alt="{{ p.nome }}">
+        <button
+            type="button"
+            data-categoria="Kit Narguilé">
+            Kit Narguilé
+        </button>
 
+        <button
+            type="button"
+            data-categoria="Bebidas">
+            Bebidas
+        </button>
+
+        <button
+            type="button"
+            data-categoria="Vinhos">
+            Vinhos
+        </button>
+
+        <button
+            type="button"
+            data-categoria="Doces">
+            Doces
+        </button>
+
+    </section>
+
+
+    <!-- PRODUTOS -->
+    <section class="conteudo-principal">
+
+        <div
+            class="grid-produtos"
+            id="grid-produtos"
+        >
+
+            {% for p in produtos %}
+
+            <div
+                class="card-produto"
+                data-categoria="{{ p.categoria.nome if p.categoria else 'Sem categoria' }}"
+                data-nome="{{ p.nome }}"
+            >
+
+                <!-- IMAGEM -->
+                <div class="card-img">
+
+                    {% if p.imagem_url %}
+
+                    <img
+                        src="{{ p.imagem_url }}"
+                        alt="{{ p.nome }}"
+                    >
+
+                    {% else %}
+
+                    <div class="sem-imagem">
+                        <i class="fa-solid fa-wine-bottle"></i>
                     </div>
 
+                    {% endif %}
 
-                    <div class="card-info">
+                </div>
 
-                        <h3>{{ p.nome }}</h3>
 
-                        <span class="badge-categoria">
-                            {{ p.categoria.nome if p.categoria else 'Sem categoria' }}
+                <!-- INFORMAÇÕES -->
+                <div class="card-info">
+
+                    <h3>{{ p.nome }}</h3>
+
+                    <span class="badge-categoria">
+                        {{ p.categoria.nome if p.categoria else 'Sem categoria' }}
+                    </span>
+
+
+                    <div class="card-preco">
+
+                        <span class="preco">
+                            R$ {{ "%.2f"|format(p.preco|float) }}
                         </span>
 
-
-                        <div class="card-preco">
-
-                            <span class="preco">
-                                R$ {{ "%.2f"|format(p.preco) }}
-                            </span>
-
-                            <span class="estoque {{ 'baixo' if p.estoque_baixo else '' }}">
-                                {{ p.estoque_atual }} un
-                            </span>
-
-                        </div>
+                        <span
+                            class="estoque {% if p.estoque_baixo %}baixo{% endif %}"
+                        >
+                            {{ p.estoque_atual }} un
+                        </span>
 
                     </div>
 
-
-                    <!-- BOTÃO CORRIGIDO -->
-                    <button onclick="adicionarAoCarrinho({{ p.id }}, {{ p.nome | tojson }}, {{ p.preco }})">
-                        Adicionar
-                    </button>
-
                 </div>
 
-                {% endfor %}
+
+                <!-- BOTÃO ADICIONAR -->
+                <button
+                    type="button"
+                    onclick="adicionarAoCarrinho(
+                        {{ p.id }},
+                        {{ p.nome | tojson }},
+                        {{ p.preco | float }}
+                    )"
+                >
+                    <i class="fa-solid fa-cart-plus"></i>
+                    Adicionar
+                </button>
 
             </div>
 
-        </section>
+            {% else %}
 
-    </main>
+            <div class="sem-produtos">
+
+                <i class="fa-solid fa-box-open"></i>
+
+                <h3>Nenhum produto encontrado</h3>
+
+                <p>
+                    Cadastre produtos para começar a realizar vendas.
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</main>
 
 
-    <!-- CARRINHO -->
-    <aside class="carrinho">
+<!-- CARRINHO -->
+<aside class="carrinho">
 
-        <div class="titulo">
+    <!-- TÍTULO -->
+    <div class="titulo">
 
-            <h2>
-                <i class="fa-solid fa-cart-shopping"></i>
-                Carrinho
-            </h2>
+        <h2>
+            <i class="fa-solid fa-cart-shopping"></i>
+            Carrinho
+        </h2>
 
-            <span id="contador-itens">
-                0 item(s)
+        <span id="contador-itens">
+            0 item(s)
+        </span>
+
+    </div>
+
+
+    <!-- CARRINHO VAZIO -->
+    <div
+        id="vazio-carrinho"
+        class="vazio"
+    >
+
+        <i class="fa-solid fa-cart-shopping"></i>
+
+        <h3>
+            Carrinho vazio
+        </h3>
+
+        <p>
+            Adicione produtos para começar.
+        </p>
+
+    </div>
+
+
+    <!-- ITENS DO CARRINHO -->
+    <div
+        id="itens-carrinho"
+        class="itens"
+    ></div>
+
+
+    <!-- RODAPÉ -->
+    <div
+        id="rodape-carrinho"
+        class="rodape"
+        style="display: none;"
+    >
+
+        <div class="total">
+
+            <span>Total:</span>
+
+            <span id="valor-total">
+                R$ 0,00
             </span>
 
         </div>
 
 
-        <!-- CARRINHO VAZIO -->
-        <div id="vazio-carrinho" class="vazio">
+        <button
+            type="button"
+            class="btn-finalizar"
+            onclick="finalizarVenda()"
+        >
 
-            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa-solid fa-check"></i>
 
-            <h3>
-                Carrinho vazio
-            </h3>
+            Finalizar Venda
 
-            <p>
-                Adicione produtos para começar.
-            </p>
+        </button>
 
-        </div>
+    </div>
 
-
-        <!-- ITENS -->
-        <div id="itens-carrinho" class="itens"></div>
-
-
-        <!-- RODAPÉ -->
-        <div id="rodape-carrinho"
-             class="rodape"
-             style="display: none;">
-
-            <div class="total">
-
-                <span>Total:</span>
-
-                <span id="valor-total">
-                    R$ 0,00
-                </span>
-
-            </div>
-
-
-            <button class="btn-finalizar"
-                    onclick="finalizarVenda()">
-
-                <i class="fa-solid fa-check"></i>
-
-                Finalizar Venda
-
-            </button>
-
-        </div>
-
-    </aside>
+</aside>
+```
 
 </div>
 
 {% endblock %}
 
-
 {% block scripts %}
 
 <script>
 
-    // ==========================================
+    // ==================================================
     // CARRINHO
-    // ==========================================
+    // ==================================================
 
     let carrinho = [];
 
 
-    // ==========================================
+    // ==================================================
     // ADICIONAR PRODUTO
-    // ==========================================
+    // ==================================================
 
     function adicionarAoCarrinho(id, nome, preco) {
+
+        preco = Number(preco);
+
+        if (isNaN(preco)) {
+            alert("Preço do produto inválido.");
+            return;
+        }
 
         const itemExistente = carrinho.find(
             item => item.id === id
@@ -283,7 +367,7 @@
             carrinho.push({
                 id: id,
                 nome: nome,
-                preco: Number(preco),
+                preco: preco,
                 quantidade: 1
             });
 
@@ -291,12 +375,13 @@
 
 
         atualizarCarrinho();
+
     }
 
 
-    // ==========================================
+    // ==================================================
     // REMOVER PRODUTO
-    // ==========================================
+    // ==================================================
 
     function removerDoCarrinho(id) {
 
@@ -305,43 +390,119 @@
         );
 
         atualizarCarrinho();
+
     }
 
 
-    // ==========================================
+    // ==================================================
+    // DIMINUIR QUANTIDADE
+    // ==================================================
+
+    function diminuirQuantidade(id) {
+
+        const item = carrinho.find(
+            item => item.id === id
+        );
+
+        if (!item) {
+            return;
+        }
+
+
+        if (item.quantidade > 1) {
+
+            item.quantidade--;
+
+        } else {
+
+            removerDoCarrinho(id);
+            return;
+
+        }
+
+
+        atualizarCarrinho();
+
+    }
+
+
+    // ==================================================
+    // AUMENTAR QUANTIDADE
+    // ==================================================
+
+    function aumentarQuantidade(id) {
+
+        const item = carrinho.find(
+            item => item.id === id
+        );
+
+        if (!item) {
+            return;
+        }
+
+        item.quantidade++;
+
+        atualizarCarrinho();
+
+    }
+
+
+    // ==================================================
     // ATUALIZAR CARRINHO
-    // ==========================================
+    // ==================================================
 
     function atualizarCarrinho() {
 
         const container =
-            document.getElementById('itens-carrinho');
+            document.getElementById("itens-carrinho");
 
         const vazio =
-            document.getElementById('vazio-carrinho');
+            document.getElementById("vazio-carrinho");
 
         const rodape =
-            document.getElementById('rodape-carrinho');
+            document.getElementById("rodape-carrinho");
 
         const contador =
-            document.getElementById('contador-itens');
+            document.getElementById("contador-itens");
 
         const totalEl =
-            document.getElementById('valor-total');
+            document.getElementById("valor-total");
 
 
-        // Quantidade total de produtos
+        // Verificar elementos
+        if (
+            !container ||
+            !vazio ||
+            !rodape ||
+            !contador ||
+            !totalEl
+        ) {
+            return;
+        }
+
+
+        // ==================================================
+        // QUANTIDADE TOTAL
+        // ==================================================
+
         const totalItens = carrinho.reduce(
-            (total, item) =>
-                total + item.quantidade,
+            (total, item) => {
+                return total + item.quantidade;
+            },
             0
         );
 
 
-        // Valor total da compra
+        // ==================================================
+        // VALOR TOTAL
+        // ==================================================
+
         const totalValor = carrinho.reduce(
-            (total, item) =>
-                total + (item.preco * item.quantidade),
+            (total, item) => {
+                return total + (
+                    item.preco * item.quantidade
+                );
+            },
             0
         );
 
@@ -350,34 +511,41 @@
             `${totalItens} item(s)`;
 
 
-        // ==========================================
+        // ==================================================
         // CARRINHO VAZIO
-        // ==========================================
+        // ==================================================
 
         if (carrinho.length === 0) {
 
-            vazio.style.display = 'block';
+            vazio.style.display = "block";
 
-            rodape.style.display = 'none';
+            rodape.style.display = "none";
 
-            container.innerHTML = '';
+            container.innerHTML = "";
+
+            totalEl.textContent = "R$ 0,00";
 
             return;
+
         }
 
 
-        // ==========================================
+        // ==================================================
         // CARRINHO COM PRODUTOS
-        // ==========================================
+        // ==================================================
 
-        vazio.style.display = 'none';
+        vazio.style.display = "none";
 
-        rodape.style.display = 'block';
+        rodape.style.display = "block";
 
 
         totalEl.textContent =
-            `R$ ${totalValor.toFixed(2).replace('.', ',')}`;
+            formatarMoeda(totalValor);
 
+
+        // ==================================================
+        // RENDERIZAR ITENS
+        // ==================================================
 
         container.innerHTML = carrinho.map(item => {
 
@@ -386,170 +554,281 @@
 
 
             return `
-            <div class="item-carrinho">
 
-                <div class="item-info">
+                <div class="item-carrinho">
 
-                    <h4>${item.nome}</h4>
+                    <div class="item-info">
 
-                    <span>
-                        R$ ${subtotal
-                    .toFixed(2)
-                    .replace('.', ',')}
-                    </span>
+                        <h4>
+                            ${escaparHTML(item.nome)}
+                        </h4>
+
+                        <span>
+                            ${formatarMoeda(subtotal)}
+                        </span>
+
+                    </div>
+
+
+                    <div class="item-quantidade">
+
+                        <button
+                            type="button"
+                            onclick="diminuirQuantidade(${item.id})"
+                        >
+                            -
+                        </button>
+
+
+                        <span>
+                            ${item.quantidade}
+                        </span>
+
+
+                        <button
+                            type="button"
+                            onclick="aumentarQuantidade(${item.id})"
+                        >
+                            +
+                        </button>
+
+
+                        <button
+                            type="button"
+                            onclick="removerDoCarrinho(${item.id})"
+                        >
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </div>
 
                 </div>
 
+            `;
 
-                <div class="item-quantidade">
+        }).join("");
 
-                    <span>
-                        Qtd: ${item.quantidade}
-                    </span>
-
-                    <button
-                        onclick="event.stopPropagation(); removerDoCarrinho(${item.id})"
-                    >
-
-                        <i class="fa-solid fa-trash"></i>
-
-                    </button>
-
-                </div>
-
-            </div>
-        `;
-
-        }).join('');
     }
 
 
-    // ==========================================
-    // FINALIZAR VENDA
-    // ==========================================
+    // ==================================================
+    // FORMATAR MOEDA
+    // ==================================================
 
-    function finalizarVenda() {
+    function formatarMoeda(valor) {
+
+        return "R$ " + Number(valor)
+            .toFixed(2)
+            .replace(".", ",");
+
+    }
+
+
+    // ==================================================
+    // ESCAPAR HTML
+    // ==================================================
+
+    function escaparHTML(texto) {
+
+        const div = document.createElement("div");
+
+        div.textContent = texto;
+
+        return div.innerHTML;
+
+    }
+
+
+    // ==================================================
+    // FINALIZAR VENDA
+    // ==================================================
+
+    async function finalizarVenda() {
 
         if (carrinho.length === 0) {
+
+            alert("O carrinho está vazio.");
+
+            return;
+
+        }
+
+
+        const confirmar =
+            confirm("Deseja finalizar esta venda?");
+
+
+        if (!confirmar) {
             return;
         }
 
 
-        fetch('/vendas', {
+        try {
 
-            method: 'POST',
+            const resposta = await fetch(
+                "/vendas",
+                {
+                    method: "POST",
 
-            headers: {
-                'Content-Type': 'application/json'
-            },
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-            body: JSON.stringify({
-                itens: carrinho
-            })
+                    body: JSON.stringify({
+                        itens: carrinho
+                    })
+                }
+            );
 
-        })
 
-            .then(res => {
+            if (!resposta.ok) {
 
-                if (!res.ok) {
-                    throw new Error(
-                        'Erro na requisição'
-                    );
+                let mensagem =
+                    "Erro ao finalizar venda.";
+
+                try {
+
+                    const erro =
+                        await resposta.json();
+
+                    if (erro.detail) {
+                        mensagem = erro.detail;
+                    }
+
+                } catch (e) {
+                    // resposta não era JSON
                 }
 
-                return res.json();
+                throw new Error(mensagem);
 
-            })
+            }
 
-            .then(data => {
 
-                alert(
-                    'Venda finalizada com sucesso!'
-                );
+            const dados =
+                await resposta.json();
 
-                carrinho = [];
 
-                atualizarCarrinho();
+            console.log(
+                "Venda realizada:",
+                dados
+            );
 
-            })
 
-            .catch(err => {
+            alert(
+                "Venda finalizada com sucesso!"
+            );
 
-                console.error(err);
 
-                alert(
-                    'Erro ao finalizar venda.'
-                );
+            // Limpar carrinho
+            carrinho = [];
 
-            });
+            atualizarCarrinho();
+
+
+            // Atualizar produtos da página
+            location.reload();
+
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao finalizar venda:",
+                erro
+            );
+
+
+            alert(
+                erro.message ||
+                "Erro ao finalizar venda."
+            );
+
+        }
 
     }
 
 
-    // ==========================================
+    // ==================================================
     // FILTRO DE CATEGORIA
-    // ==========================================
+    // ==================================================
 
     document
-        .querySelectorAll('.categorias button')
-        .forEach(btn => {
+        .querySelectorAll(".categorias button")
+        .forEach(botao => {
 
-            btn.addEventListener('click', () => {
+            botao.addEventListener(
+                "click",
+                function () {
 
-                document
-                    .querySelectorAll('.categorias button')
-                    .forEach(b =>
-                        b.classList.remove('ativo')
-                    );
+                    document
+                        .querySelectorAll(
+                            ".categorias button"
+                        )
+                        .forEach(
+                            b => b.classList.remove("ativo")
+                        );
 
 
-                btn.classList.add('ativo');
+                    this.classList.add("ativo");
 
-                filtrarProdutos();
 
-            });
+                    filtrarProdutos();
+
+                }
+            );
 
         });
 
 
-    // ==========================================
+    // ==================================================
     // FILTRAR PRODUTOS
-    // ==========================================
+    // ==================================================
 
     function filtrarProdutos() {
 
         const botaoAtivo =
             document.querySelector(
-                '.categorias button.ativo'
+                ".categorias button.ativo"
             );
 
 
         const categoriaAtiva =
-            botaoAtivo?.dataset.categoria || 'todos';
+            botaoAtivo
+                ? botaoAtivo.dataset.categoria
+                : "todos";
+
+
+        const campoBusca =
+            document.getElementById(
+                "input-busca"
+            );
 
 
         const busca =
-            document
-                .getElementById('input-busca')
-                .value
-                .toLowerCase()
-                .trim();
+            campoBusca
+                ? campoBusca.value
+                    .toLowerCase()
+                    .trim()
+                : "";
 
 
         document
-            .querySelectorAll('.card-produto')
+            .querySelectorAll(".card-produto")
             .forEach(card => {
 
                 const cardCategoria =
-                    card.dataset.categoria;
+                    card.dataset.categoria || "";
 
 
                 const cardNome =
-                    card.dataset.nome.toLowerCase();
+                    card.dataset.nome
+                        ? card.dataset.nome
+                            .toLowerCase()
+                        : "";
 
 
                 const matchCategoria =
-                    categoriaAtiva === 'todos' ||
+                    categoriaAtiva === "todos" ||
                     cardCategoria === categoriaAtiva;
 
 
@@ -557,13 +836,16 @@
                     cardNome.includes(busca);
 
 
-                if (matchCategoria && matchBusca) {
+                if (
+                    matchCategoria &&
+                    matchBusca
+                ) {
 
-                    card.style.display = '';
+                    card.style.display = "";
 
                 } else {
 
-                    card.style.display = 'none';
+                    card.style.display = "none";
 
                 }
 
@@ -572,16 +854,38 @@
     }
 
 
-    // ==========================================
+    // ==================================================
     // PESQUISA
-    // ==========================================
+    // ==================================================
 
-    document
-        .getElementById('input-busca')
-        .addEventListener(
-            'input',
+    const campoBusca =
+        document.getElementById(
+            "input-busca"
+        );
+
+
+    if (campoBusca) {
+
+        campoBusca.addEventListener(
+            "input",
             filtrarProdutos
         );
+
+    }
+
+
+    // ==================================================
+    // INICIALIZAÇÃO
+    // ==================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            atualizarCarrinho();
+
+        }
+    );
 
 </script>
 

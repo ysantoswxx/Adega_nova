@@ -655,7 +655,8 @@ let clienteAtual = {
     associado: false
 };
 
-const DESCONTO_PCT = {{ desconto_associado }};
+const DESCONTO_PCT = Number("{{ desconto_associado }}");
+
 
 
 // ── Adicionar produto ao carrinho ────────────────────────────

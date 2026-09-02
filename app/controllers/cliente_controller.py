@@ -35,11 +35,11 @@ def listar_clientes(
 
     query = db.query(Cliente)
 
-    # Pesquisa por nome ou matrícula
+    # Pesquisa por nome ou telefone
     if busca:
         query = query.filter(
             Cliente.nome.ilike(f"%{busca}%") |
-            Cliente.matricula.ilike(f"%{busca}%")
+            Cliente.telefone.ilike(f"%{busca}%")
         )
 
     clientes = query.order_by(
@@ -89,8 +89,6 @@ def criar(
 
     nome: str = Form(...),
 
-    matricula: str = Form(""),
-
     telefone: str = Form(""),
 
     db: Session = Depends(get_db),
@@ -99,66 +97,22 @@ def criar(
 ):
 
     # --------------------------------------------------------
-    # VERIFICA SE A MATRÍCULA JÁ EXISTE
-    # --------------------------------------------------------
-
-    if matricula:
-
-        existente = db.query(Cliente).filter(
-            Cliente.matricula == matricula.strip()
-        ).first()
-
-        if existente:
-
-            return templates.TemplateResponse(
-                request,
-                "clientes/form.html",
-                {
-                    "request": request,
-                    "usuario": admin,
-                    "editando": None,
-
-                    "erro":
-                        f"Matrícula {matricula} já cadastrada.",
-
-                    "valores": {
-                        "nome": nome,
-                        "matricula": matricula,
-                        "telefone": telefone
-                    }
-                },
-
-                status_code=400
-            )
-
-
-    # --------------------------------------------------------
     # CRIA CLIENTE
     # --------------------------------------------------------
 
     cliente = Cliente(
-
         nome=nome.strip(),
-
-        matricula=(
-            matricula.strip()
-            if matricula
-            else None
-        ),
 
         telefone=(
             telefone.strip()
             if telefone
             else None
         )
-
     )
-
 
     db.add(cliente)
 
     db.commit()
-
 
     return RedirectResponse(
         url="/clientes?criado=ok",
@@ -185,7 +139,6 @@ def form_editar(
         Cliente.id == cliente_id
     ).first()
 
-
     # Cliente não encontrado
     if not editando:
 
@@ -193,7 +146,6 @@ def form_editar(
             url="/clientes",
             status_code=302
         )
-
 
     return templates.TemplateResponse(
         request,
@@ -216,8 +168,6 @@ def editar(
 
     nome: str = Form(...),
 
-    matricula: str = Form(""),
-
     telefone: str = Form(""),
 
     db: Session = Depends(get_db),
@@ -229,7 +179,6 @@ def editar(
         Cliente.id == cliente_id
     ).first()
 
-
     # Cliente não encontrado
     if not editando:
 
@@ -238,45 +187,11 @@ def editar(
             status_code=302
         )
 
-
-    # --------------------------------------------------------
-    # VERIFICA CONFLITO DE MATRÍCULA
-    # --------------------------------------------------------
-
-    if matricula:
-
-        conflito = db.query(Cliente).filter(
-
-            Cliente.matricula == matricula.strip(),
-
-            Cliente.id != cliente_id
-
-        ).first()
-
-
-        if conflito:
-
-            return RedirectResponse(
-
-                url=
-                f"/clientes/{cliente_id}/editar?erro=matricula",
-
-                status_code=302
-
-            )
-
-
     # --------------------------------------------------------
     # ATUALIZA CLIENTE
     # --------------------------------------------------------
 
     editando.nome = nome.strip()
-
-    editando.matricula = (
-        matricula.strip()
-        if matricula
-        else None
-    )
 
     editando.telefone = (
         telefone.strip()
@@ -284,9 +199,7 @@ def editar(
         else None
     )
 
-
     db.commit()
-
 
     return RedirectResponse(
         url="/clientes?editado=ok",
@@ -311,13 +224,11 @@ def toggle_ativo(
         Cliente.id == cliente_id
     ).first()
 
-
     if cliente:
 
         cliente.ativo = not cliente.ativo
 
         db.commit()
-
 
     return RedirectResponse(
         url="/clientes",

@@ -1,69 +1,84 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="pt-br">
 
-{% block title %}{{ "Editar" if editando else "Novo" }} Cliente — AAPM SENAI{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block content %}
+    <title>
+        {{ "Editar" if editando else "Novo" }} Cliente — Nova Adega
+    </title>
+</head>
 
-<h1>{{ "Editar cliente" if editando else "Novo cliente" }}</h1>
+<body>
 
-{% if erro %}
-    <p style="color:red">{{ erro }}</p>
-{% endif %}
+    <h1>
+        {{ "Editar cliente" if editando else "Novo cliente" }}
+    </h1>
 
-{% if request.query_params.get('erro') == 'matricula' %}
-    <p style="color:red">Esta matrícula já está em uso.</p>
-{% endif %}
+    {% if erro %}
+        <p style="color: red;">
+            {{ erro }}
+        </p>
+    {% endif %}
 
-<form action="{{ '/clientes/' + editando.id|string + '/editar' if editando else '/clientes/novo' }}"
-      method="post">
+    <form
+        action="{{ '/clientes/' + editando.id|string + '/editar' if editando else '/clientes/novo' }}"
+        method="post"
+    >
 
-    <label>Nome completo:
-        <input
-            type="text"
-            name="nome"
-            required
-            autofocus
-            value="{{ editando.nome if editando else (valores.nome if valores else '') }}">
-    </label>
-    <br>
+        <!-- Nome -->
+        <label>
+            Nome completo:
 
-    <label>Matrícula SENAI (opcional):
-        <input
-            type="text"
-            name="matricula"
-            placeholder="Ex: 2024001"
-            value="{{ editando.matricula if editando else (valores.matricula if valores else '') }}">
-    </label>
-    <br>
+            <input
+                type="text"
+                name="nome"
+                required
+                autofocus
+                value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
+            >
+        </label>
 
-    <label>Telefone (opcional):
-        <input
-            type="text"
-            name="telefone"
-            placeholder="Ex: (11) 99999-9999"
-            value="{{ editando.telefone if editando else (valores.telefone if valores else '') }}">
-    </label>
-    <br>
+        <br><br>
 
-    <label>
-        <input
-            type="checkbox"
-            name="is_associado"
-            value="true"
-            {{ 'checked' if (editando and editando.is_associado) or (valores and valores.is_associado) }}>
+        <!-- Telefone -->
+        <label>
+            Telefone (opcional):
 
-        É associado AAPM (recebe 10% de desconto)
-    </label>
+            <input
+                type="text"
+                name="telefone"
+                placeholder="Ex: (11) 99999-9999"
+                value="{{ editando.telefone if editando else (valores.telefone if valores else '') }}"
+            >
+        </label>
 
-    <br>
-    <br>
+        <br><br>
 
-    <button type="submit">
-        {{ "Salvar alterações" if editando else "Cadastrar cliente" }}
-    </button>
+        <!-- CPF -->
+        <label>
+            CPF (opcional):
 
-    <a href="/clientes">Cancelar</a>
+            <input
+                type="text"
+                name="cpf"
+                placeholder="Ex: 000.000.000-00"
+                value="{{ editando.cpf if editando else (valores.cpf if valores else '') }}"
+            >
+        </label>
 
-</form>
+        <br><br>
 
-{% endblock %}
+        <button type="submit">
+            {{ "Salvar alterações" if editando else "Cadastrar cliente" }}
+        </button>
+
+        <a href="/clientes">
+            Cancelar
+        </a>
+
+    </form>
+
+</body>
+</html>

@@ -42,7 +42,7 @@ def listar_produtos(
         query = query.filter(Produto.categoria_id == categoria_id)
 
     produtos    = query.order_by(Produto.nome).all()
-    categorias  = db.query(Categoria).filter(Categoria.ativo == True).all()
+    categorias  = db.query(Categoria).filter(Categoria.ativa == True).all()
 
     return templates.TemplateResponse(
         request,

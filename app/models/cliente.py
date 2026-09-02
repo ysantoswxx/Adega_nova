@@ -11,7 +11,9 @@ class Cliente(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String(200), nullable=False)
     telefone = Column(String(20), nullable=True)
+    email = Column(String(200), nullable=True)
     cpf = Column(String(14), nullable=True)
+    ativo = Column(Boolean, default=True)
 
     # Relacionamento reverso para consultar vendas do cliente
     vendas = relationship("Venda", back_populates="cliente")

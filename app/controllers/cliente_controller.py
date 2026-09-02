@@ -25,6 +25,10 @@ templates = Jinja2Templates(
 # LISTAR CLIENTES
 # ============================================================
 
+# ============================================================
+# LISTAR CLIENTES
+# ============================================================
+
 @router.get("/")
 def listar_clientes(
     request: Request,
@@ -42,9 +46,13 @@ def listar_clientes(
             Cliente.matricula.ilike(f"%{busca}%")
         )
 
+<<<<<<< Updated upstream
     clientes = query.order_by(
         Cliente.nome
     ).all()
+=======
+    clientes = query.order_by(Cliente.nome).all()
+>>>>>>> Stashed changes
 
     return templates.TemplateResponse(
         request,
@@ -59,7 +67,11 @@ def listar_clientes(
 
 
 # ============================================================
+<<<<<<< Updated upstream
 # FORMULÁRIO — NOVO CLIENTE
+=======
+# NOVO CLIENTE — FORMULÁRIO
+>>>>>>> Stashed changes
 # ============================================================
 
 @router.get("/novo")
@@ -67,7 +79,10 @@ def form_novo(
     request: Request,
     admin=Depends(get_admin)
 ):
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     return templates.TemplateResponse(
         request,
         "clientes/form.html",
@@ -86,6 +101,7 @@ def form_novo(
 @router.post("/novo")
 def criar(
     request: Request,
+<<<<<<< Updated upstream
 
     nome: str = Form(...),
 
@@ -102,6 +118,15 @@ def criar(
     # VERIFICA SE A MATRÍCULA JÁ EXISTE
     # --------------------------------------------------------
 
+=======
+    nome: str = Form(...),
+    matricula: str = Form(""),
+    telefone: str = Form(""),
+    db: Session = Depends(get_db),
+    admin=Depends(get_admin)
+):
+    # Verifica duplicidade de matrícula
+>>>>>>> Stashed changes
     if matricula:
 
         existente = db.query(Cliente).filter(
@@ -117,10 +142,14 @@ def criar(
                     "request": request,
                     "usuario": admin,
                     "editando": None,
+<<<<<<< Updated upstream
 
                     "erro":
                         f"Matrícula {matricula} já cadastrada.",
 
+=======
+                    "erro": f"Matrícula {matricula} já cadastrada.",
+>>>>>>> Stashed changes
                     "valores": {
                         "nome": nome,
                         "matricula": matricula,
@@ -131,6 +160,7 @@ def criar(
                 status_code=400
             )
 
+<<<<<<< Updated upstream
 
     # --------------------------------------------------------
     # CRIA CLIENTE
@@ -159,6 +189,21 @@ def criar(
 
     db.commit()
 
+=======
+    cliente = Cliente(
+        nome=nome.strip(),
+        matricula=matricula.strip() or None,
+        telefone=telefone.strip() or None,
+    )
+
+    db.add(cliente)
+    db.commit()
+
+    return RedirectResponse(
+        url="/clientes?criado=ok",
+        status_code=302
+    )
+>>>>>>> Stashed changes
 
     return RedirectResponse(
         url="/clientes?criado=ok",
@@ -170,6 +215,10 @@ def criar(
 # FORMULÁRIO — EDITAR CLIENTE
 # ============================================================
 
+# ============================================================
+# EDITAR CLIENTE — FORMULÁRIO
+# ============================================================
+
 @router.get("/{cliente_id}/editar")
 def form_editar(
     cliente_id: int,
@@ -177,23 +226,35 @@ def form_editar(
     request: Request,
 
     db: Session = Depends(get_db),
+<<<<<<< Updated upstream
 
     admin=Depends(get_admin)
 ):
 
+=======
+    admin=Depends(get_admin)
+):
+>>>>>>> Stashed changes
     editando = db.query(Cliente).filter(
         Cliente.id == cliente_id
     ).first()
 
+<<<<<<< Updated upstream
 
     # Cliente não encontrado
     if not editando:
 
+=======
+    if not editando:
+>>>>>>> Stashed changes
         return RedirectResponse(
             url="/clientes",
             status_code=302
         )
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
     return templates.TemplateResponse(
         request,
@@ -213,6 +274,7 @@ def form_editar(
 @router.post("/{cliente_id}/editar")
 def editar(
     cliente_id: int,
+<<<<<<< Updated upstream
 
     nome: str = Form(...),
 
@@ -242,7 +304,25 @@ def editar(
     # --------------------------------------------------------
     # VERIFICA CONFLITO DE MATRÍCULA
     # --------------------------------------------------------
+=======
+    nome: str = Form(...),
+    matricula: str = Form(""),
+    telefone: str = Form(""),
+    db: Session = Depends(get_db),
+    admin=Depends(get_admin)
+):
+    editando = db.query(Cliente).filter(
+        Cliente.id == cliente_id
+    ).first()
+>>>>>>> Stashed changes
 
+    if not editando:
+        return RedirectResponse(
+            url="/clientes",
+            status_code=302
+        )
+
+    # Verifica conflito de matrícula
     if matricula:
 
         conflito = db.query(Cliente).filter(
@@ -253,7 +333,10 @@ def editar(
 
         ).first()
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         if conflito:
 
             return RedirectResponse(
@@ -265,6 +348,7 @@ def editar(
 
             )
 
+<<<<<<< Updated upstream
 
     # --------------------------------------------------------
     # ATUALIZA CLIENTE
@@ -287,6 +371,18 @@ def editar(
 
     db.commit()
 
+=======
+    editando.nome = nome.strip()
+    editando.matricula = matricula.strip() or None
+    editando.telefone = telefone.strip() or None
+
+    db.commit()
+
+    return RedirectResponse(
+        url="/clientes?editado=ok",
+        status_code=302
+    )
+>>>>>>> Stashed changes
 
     return RedirectResponse(
         url="/clientes?editado=ok",
@@ -298,27 +394,42 @@ def editar(
 # ATIVAR / DESATIVAR CLIENTE
 # ============================================================
 
+# ============================================================
+# ATIVAR / DESATIVAR CLIENTE
+# ============================================================
+
 @router.post("/{cliente_id}/toggle-ativo")
 def toggle_ativo(
     cliente_id: int,
 
     db: Session = Depends(get_db),
+<<<<<<< Updated upstream
 
     admin=Depends(get_admin)
 ):
 
+=======
+    admin=Depends(get_admin)
+):
+>>>>>>> Stashed changes
     cliente = db.query(Cliente).filter(
         Cliente.id == cliente_id
     ).first()
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     if cliente:
 
         cliente.ativo = not cliente.ativo
 
         db.commit()
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     return RedirectResponse(
         url="/clientes",
         status_code=302

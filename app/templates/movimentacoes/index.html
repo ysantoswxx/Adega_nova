@@ -1,436 +1,347 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Movimentações — Adega Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --card-bg: #353401;
+            --border-color: #000000;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent: #ffee00;
+            --accent-hover: #fded05;
+            --green: #10b981;
+            --red: #ef4444;
+        }
 
-{% block title %}Movimentações — AAPM SENAI{% endblock %}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-{% block styles %}
-<link
-    rel="stylesheet"
-    href="/static/css/movimentacoes-index.css">
-{% endblock %}
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 24px;
+        }
 
-{% block content %}
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-<main class="pagina">
+        /* Topo */
+        header {
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
 
-    <!-- =========================
-         CABEÇALHO
-    ========================== -->
+        .subtitulo {
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
 
-    <header class="cabecalho">
+        h1 {
+            font-size: 28px;
+            margin: 4px 0;
+            color: var(--text-main);
+        }
 
-        <div>
+        p.descricao {
+            color: var(--text-dim);
+            font-size: 14px;
+        }
 
-            <span class="categoria">
-                CONTROLE DE ESTOQUE
-            </span>
+        /* Card de Filtros */
+        .card-filtro {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
 
-            <h1>
-                Histórico de movimentações
-            </h1>
+        .card-filtro h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
 
-            <p>
-                Consulte todas as entradas e saídas
-                registradas no estoque.
-            </p>
+        .card-filtro p {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+        }
 
-        </div>
+        .form-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
 
-        <a
-            href="/movimentacoes/nova"
-            class="botao-nova">
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 200px;
+        }
 
-            + Registrar movimentação
+        .campo label {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-weight: 600;
+        }
 
-        </a>
+        select, input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            width: 100%;
+        }
 
+        select:focus, input:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-filtrar {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            height: 42px;
+        }
+
+        .btn-filtrar:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Tabela */
+        .card-tabela {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .tabela-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tabela-header h2 {
+            font-size: 18px;
+        }
+
+        .tabela-header span {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-dim);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge.entrada {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--green);
+        }
+
+        .badge.saida {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--red);
+        }
+
+        /* Estado Vazio */
+        .vazio {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-dim);
+        }
+
+        .vazio i {
+            font-size: 36px;
+            margin-bottom: 12px;
+            color: var(--border-color);
+        }
+
+        .vazio h4 {
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        /* Voltar */
+        .btn-voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dim);
+            text-decoration: none;
+            margin-top: 24px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .btn-voltar:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="subtitulo">Controle de Estoque</span>
+        <h1>Histórico de movimentações</h1>
+        <p class="descricao">Consulte todas as entradas e saídas registradas no estoque.</p>
     </header>
 
+    <!-- Filtros -->
+    <div class="card-filtro">
+        <h3><i class="fa-solid fa-magnifying-glass" style="color: var(--accent);"></i> Filtrar movimentações</h3>
+        <p>Encontre rapidamente um registro</p>
 
-    <!-- =========================
-         FILTROS
-    ========================== -->
-
-    <section class="filtros">
-
-        <div class="titulo-filtros">
-
-            <span>🔎</span>
-
-            <div>
-
-                <strong>
-                    Filtrar movimentações
-                </strong>
-
-                <p>
-                    Encontre rapidamente um registro
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <form
-            method="get"
-            action="/movimentacoes"
-            class="form-filtros">
-
-            <!-- PRODUTO -->
-
-            <div class="campo-filtro">
-
-                <label for="produto_id">
-                    Produto
-                </label>
-
-                <select
-                    name="produto_id"
-                    id="produto_id">
-
-                    <option value="0">
-                        Todos os produtos
-                    </option>
-
+        <form method="get" action="/movimentacoes/" class="form-row">
+            <div class="campo">
+                <label for="produto">Produto</label>
+                <select name="produto_id" id="produto">
+                    <option value="">Todos os produtos</option>
                     {% for p in produtos %}
-
-                        <option
-                            value="{{ p.id }}"
-                            {{ 'selected' if produto_id == p.id else '' }}>
-
-                            {{ p.nome }}
-
-                        </option>
-
+                        <option value="{{ p.id }}">{{ p.nome }}</option>
                     {% endfor %}
-
                 </select>
-
             </div>
 
-
-            <!-- TIPO -->
-
-            <div class="campo-filtro">
-
-                <label for="tipo">
-                    Tipo
-                </label>
-
-                <select
-                    name="tipo"
-                    id="tipo">
-
-                    <option value="">
-                        Todos os tipos
-                    </option>
-
-                    <option
-                        value="entrada"
-                        {{ 'selected' if tipo == 'entrada' else '' }}>
-
-                        ▲ Entrada
-
-                    </option>
-
-                    <option
-                        value="saida"
-                        {{ 'selected' if tipo == 'saida' else '' }}>
-
-                        ▼ Saída
-
-                    </option>
-
+            <div class="campo">
+                <label for="tipo">Tipo</label>
+                <select name="tipo" id="tipo">
+                    <option value="">Todos os tipos</option>
+                    <option value="ENTRADA">Entrada</option>
+                    <option value="SAIDA">Saída</option>
                 </select>
-
             </div>
 
-
-            <!-- BOTÃO -->
-
-            <button
-                type="submit"
-                class="botao-filtrar">
-
-                Filtrar
-
+            <button type="submit" class="btn-filtrar">
+                <i class="fa-solid fa-filter"></i> Filtrar
             </button>
-
-
-            {% if produto_id or tipo %}
-
-                <a
-                    href="/movimentacoes"
-                    class="botao-limpar">
-
-                    Limpar filtros
-
-                </a>
-
-            {% endif %}
-
         </form>
+    </div>
 
-    </section>
-
-
-    <!-- =========================
-         TABELA
-    ========================== -->
-
-    <section class="tabela-card">
-
-        <div class="tabela-cabecalho">
-
-            <div>
-
-                <h2>
-                    Movimentações
-                </h2>
-
-                <p>
-                    Registros de entradas e saídas
-                </p>
-
-            </div>
-
+    <!-- Tabela -->
+    <div class="card-tabela">
+        <div class="tabela-header">
+            <h2>Movimentações</h2>
+            <span>Registros de entradas e saídas</span>
         </div>
 
-
-        <div class="tabela-container">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>Data</th>
-                        <th>Produto</th>
-                        <th>Tipo</th>
-                        <th>Quantidade</th>
-                        <th>Preço unit.</th>
-                        <th>Total</th>
-                        <th>Observação</th>
-                        <th>Registrado por</th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                    {% for m in movimentacoes %}
-
-                    <tr>
-
-                        <!-- DATA -->
-
-                        <td>
-
-                            <span class="data">
-
-                                {{ m.criado_em.strftime(
-                                    '%d/%m/%Y'
-                                ) }}
-
-                            </span>
-
-                            <small>
-
-                                {{ m.criado_em.strftime(
-                                    '%H:%M'
-                                ) }}
-
-                            </small>
-
-                        </td>
-
-
-                        <!-- PRODUTO -->
-
-                        <td>
-
-                            <a
-                                href="/produtos/{{ m.produto_id }}"
-                                class="produto">
-
-                                {{ m.produto.nome }}
-
-                            </a>
-
-                        </td>
-
-
-                        <!-- TIPO -->
-
-                        <td>
-
-                            {% if m.tipo.value == 'entrada' %}
-
-                                <span
-                                    class="badge entrada">
-
-                                    ▲ Entrada
-
-                                </span>
-
-                            {% else %}
-
-                                <span
-                                    class="badge saida">
-
-                                    ▼ Saída
-
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <!-- QUANTIDADE -->
-
-                        <td>
-
-                            <strong>
-                                {{ m.quantidade }}
-                            </strong>
-
-                            <span class="unidade">
-                                un.
-                            </span>
-
-                        </td>
-
-
-                        <!-- PREÇO -->
-
-                        <td>
-
-                            R$
-
-                            {{ "%.2f"|format(
-                                m.preco_unitario
-                            ) }}
-
-                        </td>
-
-
-                        <!-- TOTAL -->
-
-                        <td>
-
-                            <strong>
-
-                                R$
-
-                                {{ "%.2f"|format(
-                                    m.valor_total
-                                ) }}
-
-                            </strong>
-
-                        </td>
-
-
-                        <!-- OBSERVAÇÃO -->
-
-                        <td>
-
-                            {% if m.observacao %}
-
-                                {{ m.observacao }}
-
-                            {% else %}
-
-                                <span class="vazio">
-                                    —
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <!-- USUÁRIO -->
-
-                        <td>
-
-                            {% if m.usuario %}
-
-                                <span class="usuario">
-
-                                    {{ m.usuario.nome }}
-
-                                </span>
-
-                            {% else %}
-
-                                <span class="vazio">
-                                    —
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-
-                    <!-- SEM RESULTADOS -->
-
-                    {% if not movimentacoes %}
-
-                    <tr>
-
-                        <td
-                            colspan="8"
-                            class="sem-resultados">
-
-                            <div class="icone-vazio">
-                                📦
-                            </div>
-
-                            <strong>
-                                Nenhuma movimentação encontrada
-                            </strong>
-
-                            <p>
-                                Tente alterar os filtros
-                                ou registre uma nova movimentação.
-                            </p>
-
-                        </td>
-
-                    </tr>
-
-                    {% endif %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         VOLTAR
-    ========================== -->
-
-    <a
-        href="/"
-        class="voltar">
-
-        ← Dashboard
-
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Produto</th>
+                    <th>Tipo</th>
+                    <th>Quantidade</th>
+                    <th>Preço unit.</th>
+                    <th>Total</th>
+                    <th>Observação</th>
+                    <th>Registrado por</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in movimentacoes %}
+                <tr>
+                    <td>{{ m.data_formatada }}</td>
+                    <td><strong>{{ m.produto.nome }}</strong></td>
+                    <td>
+                        <span class="badge {{ 'entrada' if m.tipo == 'ENTRADA' else 'saida' }}">
+                            {{ m.tipo }}
+                        </span>
+                    </td>
+                    <td>{{ m.quantidade }} un</td>
+                    <td>R$ {{ "%.2f"|format(m.preco_unitario) }}</td>
+                    <td>R$ {{ "%.2f"|format(m.quantidade * m.preco_unitario) }}</td>
+                    <td>{{ m.observacao or '-' }}</td>
+                    <td>{{ m.usuario.nome if m.usuario else 'Sistema' }}</td>
+                </tr>
+                {% endfor %}
+
+                {% if not movimentacoes %}
+                <tr>
+                    <td colspan="8">
+                        <div class="vazio">
+                            <i class="fa-solid fa-box-open"></i>
+                            <h4>Nenhuma movimentação encontrada</h4>
+                            <p>Tente alterar os filtros ou registre uma nova movimentação.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="/" class="btn-voltar">
+        <i class="fa-solid fa-arrow-left"></i> Voltar ao Dashboard
     </a>
+</div>
 
-</main>
-
-{% endblock %}
+</body>
+</html>

@@ -5,10 +5,92 @@
 {% endblock %}
 
 {% block styles %}
-
 <link rel="stylesheet" href="/static/css/home.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
+<style>
+    /* Estilização específica para formulários do PDV */
+    .card-form {
+        background: var(--card-bg, #1e293b);
+        border: 1px solid var(--border-color, #334155);
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        max-width: 800px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    @media (max-width: 640px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .campo-full {
+        grid-column: 1 / -1;
+    }
+
+    .preview-imagem {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(15, 23, 42, 0.5);
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color, #334155);
+    }
+
+    .botoes-form {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .btn-salvar {
+        background: var(--accent, #8b5cf6);
+        color: #ffffff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+    }
+
+    .btn-salvar:hover {
+        background: var(--accent-hover, #7c3aed);
+    }
+
+    .btn-cancelar {
+        background: transparent;
+        color: var(--text-dim, #94a3b8);
+        border: 1px solid var(--border-color, #334155);
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+    }
+
+    .btn-cancelar:hover {
+        color: #ffffff;
+        border-color: var(--text-dim, #94a3b8);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -79,18 +161,23 @@
 
         <div class="titulo-pagina">
 
-            <h1>
-                {{ "Editar Produto" if editando else "Novo Produto" }}
-            </h1>
+            <div>
+                <span style="color: var(--neon, #8b5cf6); font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                    {{ "Edição" if editando else "Cadastro" }}
+                </span>
+                <h1 style="margin-top: 4px;">
+                    {{ "Editar Produto" if editando else "Novo Produto" }}
+                </h1>
+            </div>
 
         </div>
 
         {% if erro %}
 
-            <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(239, 68, 68, 0.2);">
+            <div style="background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 14px 16px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 14px; display: flex; align-items: center; gap: 10px;">
 
-                <i class="fa-solid fa-circle-exclamation"></i>
-                {{ erro }}
+                <i class="fa-solid fa-circle-exclamation" style="font-size: 16px;"></i>
+                <span>{{ erro }}</span>
 
             </div>
 
@@ -103,171 +190,178 @@
             class="card-form"
         >
 
-            <div class="campo">
+            <div class="form-grid">
 
-                <label for="nome">
-                    Nome do Produto
-                </label>
+                <!-- Nome do Produto -->
+                <div class="campo campo-full">
 
-                <input
-                    type="text"
-                    id="nome"
-                    name="nome"
-                    value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
-                    required
-                    placeholder="Ex: Brahma Duplo Malte"
-                >
-
-            </div>
-
-
-            <div class="campo">
-
-                <label for="categoria">
-                    Categoria
-                </label>
-
-                <select
-                    id="categoria"
-                    name="categoria_id"
-                    required
-                >
-
-                    <option value="0">
-                        Sem categoria
-                    </option>
-
-                    {% for c in categorias %}
-
-                        <option
-                            value="{{ c.id }}"
-                            {{ 'selected' if (editando and editando.categoria_id == c.id) or (valores and valores.categoria_id == c.id) else '' }}
-                        >
-                            {{ c.nome }}
-                        </option>
-
-                    {% endfor %}
-
-                </select>
-
-            </div>
-
-
-            <div class="campo">
-
-                <label for="preco">
-                    Preço (R$)
-                </label>
-
-                <input
-                    type="number"
-                    id="preco"
-                    name="preco"
-                    step="0.01"
-                    min="0"
-                    value="{{ editando.preco if editando else (valores.preco if valores else '0.00') }}"
-                    required
-                    placeholder="0.00"
-                >
-
-            </div>
-
-
-            <div class="campo">
-
-                <label for="estoque">
-                    Estoque (unidades)
-                </label>
-
-                <input
-                    type="number"
-                    id="estoque"
-                    name="estoque_atual"
-                    min="0"
-                    value="{{ editando.estoque_atual if editando else (valores.estoque_atual if valores else '0') }}"
-                    required
-                    placeholder="0"
-                >
-
-            </div>
-
-
-            <!-- Exibição da imagem atual na edição -->
-
-            {% if editando and editando.imagem_path %}
-
-                <div class="campo">
-
-                    <label>
-                        Imagem Atual
+                    <label for="nome">
+                        Nome do Produto
                     </label>
 
-                    <img
-                        src="{{ editando.imagem_url }}"
-                        alt="{{ editando.nome }}"
-                        width="120"
-                        style="object-fit:cover; border-radius: 8px; border: 2px solid #3f3f46;"
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
+                        required
+                        placeholder="Ex: Cerveja Heineken 600ml"
                     >
 
                 </div>
 
-            {% endif %}
+                <!-- Categoria -->
+                <div class="campo campo-full">
 
+                    <label for="categoria">
+                        Categoria
+                    </label>
 
-            <div class="campo">
+                    <select
+                        id="categoria"
+                        name="categoria_id"
+                        required
+                    >
 
-                <label for="imagem">
-                    {{ "Substituir Imagem:" if editando else "Imagem do Produto:" }}
-                </label>
+                        <option value="0">
+                            Sem categoria
+                        </option>
 
-                <input
-                    type="file"
-                    id="imagem"
-                    name="imagem"
-                    accept=".jpg,.jpeg,.png,.webp"
-                >
+                        {% for c in categorias %}
+
+                            <option
+                                value="{{ c.id }}"
+                                {{ 'selected' if (editando and editando.categoria_id == c.id) or (valores and valores.categoria_id == c.id) else '' }}
+                            >
+                                {{ c.nome }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- Preço -->
+                <div class="campo">
+
+                    <label for="preco">
+                        Preço (R$)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="preco"
+                        name="preco"
+                        step="0.01"
+                        min="0"
+                        value="{{ editando.preco if editando else (valores.preco if valores else '0.00') }}"
+                        required
+                        placeholder="0.00"
+                    >
+
+                </div>
+
+                <!-- Estoque -->
+                <div class="campo">
+
+                    <label for="estoque">
+                        Estoque (unidades)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="estoque"
+                        name="estoque_atual"
+                        min="0"
+                        value="{{ editando.estoque_atual if editando else (valores.estoque_atual if valores else '0') }}"
+                        required
+                        placeholder="0"
+                    >
+
+                </div>
+
+                <!-- Preview Imagem Atual -->
+                {% if editando and editando.imagem_path %}
+
+                    <div class="campo campo-full">
+
+                        <label>Imagem Atual</label>
+
+                        <div class="preview-imagem">
+
+                            <img
+                                src="{{ editando.imagem_url }}"
+                                alt="{{ editando.nome }}"
+                                width="70"
+                                height="70"
+                                style="object-fit:cover; border-radius: 6px;"
+                            >
+
+                            <span style="font-size: 13px; color: var(--text-dim, #94a3b8);">
+                                Uma imagem já foi associada a este produto. Escolha um novo arquivo abaixo se desejar alterá-la.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+                <!-- Input Upload Imagem -->
+                <div class="campo campo-full">
+
+                    <label for="imagem">
+                        {{ "Substituir Imagem:" if editando else "Imagem do Produto:" }}
+                    </label>
+
+                    <input
+                        type="file"
+                        id="imagem"
+                        name="imagem"
+                        accept=".jpg,.jpeg,.png,.webp"
+                        style="padding: 8px;"
+                    >
+
+                </div>
 
             </div>
 
+            <!-- Botões de Ação -->
+            <div class="botoes-form">
 
-            <button
-                type="submit"
-                class="btn-salvar"
-            >
+                <button
+                    type="submit"
+                    class="btn-salvar"
+                >
+                    <i class="fa-solid fa-check"></i>
+                    {{ "Salvar Alterações" if editando else "Criar Produto" }}
+                </button>
 
-                <i class="fa-solid fa-check"></i>
+                <a
+                    href="/produtos"
+                    class="btn-cancelar"
+                >
+                    Cancelar
+                </a>
 
-                {{ "Salvar Alterações" if editando else "Criar Produto" }}
-
-            </button>
-
-
-            <a
-                href="/produtos"
-                class="btn-cancelar"
-            >
-                Cancelar
-            </a>
+            </div>
 
         </form>
 
-
-        <p style="margin-top: 30px;">
+        <p style="margin-top: 24px;">
 
             <a
                 href="/produtos"
-                style="color: #71717a; text-decoration: none; font-size: 14px;"
+                style="color: var(--neon, #8b5cf6); text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;"
             >
-
                 <i class="fa-solid fa-arrow-left"></i>
                 Voltar à Lista
-
             </a>
 
         </p>
 
     </main>
-
 
     <aside class="carrinho">
 
@@ -304,26 +398,20 @@
 
 {% endblock %}
 
-
 {% block scripts %}
 
 <script>
-
     // Script simples para manter a data/hora atualizada no cabeçalho
-
     function atualizarDataHora() {
-
         const agora = new Date();
 
-        const horas =
-            String(agora.getHours()).padStart(2, '0');
+        const horas = String(agora.getHours()).padStart(2, '0');
+        const minutos = String(agora.getMinutes()).padStart(2, '0');
 
-        const minutos =
-            String(agora.getMinutes()).padStart(2, '0');
-
-        document.getElementById('relogio').textContent =
-            `${horas}:${minutos}`;
-
+        const relogioEl = document.getElementById('relogio');
+        if (relogioEl) {
+            relogioEl.textContent = `${horas}:${minutos}`;
+        }
 
         const opcoes = {
             day: 'numeric',
@@ -331,17 +419,14 @@
             year: 'numeric'
         };
 
-
-        document.getElementById('data-atual').textContent =
-            agora.toLocaleDateString('pt-BR', opcoes);
-
+        const dataEl = document.getElementById('data-atual');
+        if (dataEl) {
+            dataEl.textContent = agora.toLocaleDateString('pt-BR', opcoes);
+        }
     }
 
-
     setInterval(atualizarDataHora, 1000);
-
     atualizarDataHora();
-
 </script>
 
 {% endblock %}

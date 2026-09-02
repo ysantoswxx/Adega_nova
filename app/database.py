@@ -3,25 +3,30 @@ from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from dotenv import load_dotenv
 import os
 
-#Carregar as variveis de ambiente 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+# Usa o mesmo banco configurado no .env; mantém adega.db como padrão.
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./adega.db")
 
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+)
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-
-
-Session = sessionmaker(autoflush=False, autocommit=False, bind=engine)
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)
 
 
 class Base(DeclarativeBase):
     pass
 
-#Função de conexão
+
 def get_db():
-    db = Session()
-    try: 
+    db = SessionLocal()
+    try:
         yield db
     finally:
         db.close()

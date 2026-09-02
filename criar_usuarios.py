@@ -1,41 +1,51 @@
-# Script para popular o banco de dados com usuarios admin
+# Script para criar ou atualizar o usuário administrador
 
-from app.database import Session
+from app.database import SessionLocal
 from app.models.usuarios import Usuario
 from app.auth import hash_senha
 
 
-#funçaõ para cadastrar os usuarios 
 def seed():
-    db = Session()
+    db = SessionLocal()
+
     try:
         nome_usuario = "admin"
         email_usuario = "admin@teste.com"
         senha_usuario = "admin@123"
         perfil = "admin"
 
-        #verificar se o usuario já existe
-        existente = db.query(Usuario).filter_by(email=email_usuario).first()
+        existente = (
+            db.query(Usuario)
+            .filter_by(email=email_usuario)
+            .first()
+        )
 
-        if not existente:
-            #criar o usuario 
+        if existente is None:
             usuario = Usuario(
                 nome=nome_usuario,
-                email=email_usuario, 
-                senha_hash=hash_senha(senha_usuario), 
-                role=perfil
-                )
+                email=email_usuario,
+                senha_hash=hash_senha(senha_usuario),
+                role=perfil,
+                ativo=True,
+            )
             db.add(usuario)
-            db.commit()
-            print(f"Usuario cadastrado com sucesso {nome_usuario}!")
+            print("Usuário admin criado com sucesso!")
         else:
-            print(f"Esse email já está cadastrado: {email_usuario}")
+            existente.nome = nome_usuario
+            existente.senha_hash = hash_senha(senha_usuario)
+            existente.role = perfil
+            existente.ativo = True
+            print("Usuário admin atualizado com sucesso!")
+
+        db.commit()
 
     except Exception as erro:
         db.rollback()
-        print(f"Erro: {erro}")
+        print(f"Erro ao criar ou atualizar o usuário admin: {erro}")
+
     finally:
         db.close()
 
-#chamar a afunção
-seed()
+
+if __name__ == "__main__":
+    seed()

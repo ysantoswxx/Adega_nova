@@ -4,7 +4,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from app.auth import get_usuario_opcional
+from app.database import Base, engine
 
+
+from fastapi import FastAPI
 from app.controllers import auth_controller
 from app.controllers import usuario_controller
 from app.controllers import categoria_controller
@@ -12,6 +15,10 @@ from app.controllers import produto_controller
 from app.controllers import movimentacao_controller
 from app.controllers import cliente_controller
 from app.controllers import pdv_controller
+
+app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Sistema de Ponto de venda")
 

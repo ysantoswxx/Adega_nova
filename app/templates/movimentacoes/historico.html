@@ -1,387 +1,347 @@
-<!-- templates/movimentacoes/historico.html -->
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="pt-br">
+{% block title %}Histórico — {{ produto.nome }}{% endblock %}
 
-<head>
+{% block styles %}
+<link
+    rel="stylesheet"
+    href="/static/css/historico.css">
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block content %}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<main class="pagina">
 
-    <title>Histórico — {{ produto.nome }}</title>
+    <!-- =========================
+         CABEÇALHO
+    ========================== -->
 
-    <link
-        rel="stylesheet"
-        href="/static/css/historico.css">
+    <section class="cabecalho">
 
-</head>
+        <div>
+
+            <span class="categoria">
+                HISTÓRICO DO PRODUTO
+            </span>
+
+            <h1>
+                {{ produto.nome }}
+            </h1>
+
+            <p>
+                Consulte todas as entradas e saídas
+                deste produto.
+            </p>
+
+        </div>
+
+        <a
+            href="/movimentacoes/nova?produto_id={{ produto.id }}"
+            class="botao-principal">
+
+            + Registrar movimentação
+
+        </a>
+
+    </section>
 
 
-<body>
+    <!-- =========================
+         RESUMO
+    ========================== -->
 
-    <main class="pagina">
+    <section class="resumo">
 
-        <!-- =========================
-             CABEÇALHO
-        ========================== -->
+        <!-- ESTOQUE -->
 
-        <section class="cabecalho">
+        <div class="card-resumo">
+
+            <span class="titulo-resumo">
+                Estoque atual
+            </span>
+
+            <strong class="numero estoque">
+                {{ produto.estoque_atual }}
+            </strong>
+
+            <span class="descricao">
+                unidades disponíveis
+            </span>
+
+        </div>
+
+
+        <!-- ENTRADAS -->
+
+        <div class="card-resumo entrada">
+
+            <span class="titulo-resumo">
+                Total de entradas
+            </span>
+
+            <strong class="numero">
+                + {{ total_entradas }}
+            </strong>
+
+            <span class="descricao">
+                unidades recebidas
+            </span>
+
+        </div>
+
+
+        <!-- SAÍDAS -->
+
+        <div class="card-resumo saida">
+
+            <span class="titulo-resumo">
+                Total de saídas
+            </span>
+
+            <strong class="numero">
+                - {{ total_saidas }}
+            </strong>
+
+            <span class="descricao">
+                unidades vendidas/retiradas
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         HISTÓRICO
+    ========================== -->
+
+    <section class="historico">
+
+        <div class="titulo-tabela">
 
             <div>
 
-                <span class="categoria">
-                    HISTÓRICO DO PRODUTO
-                </span>
-
-                <h1>
-                    {{ produto.nome }}
-                </h1>
+                <h2>
+                    Movimentações
+                </h2>
 
                 <p>
-                    Consulte todas as entradas e saídas
-                    deste produto.
+                    Registro de movimentações do produto
                 </p>
 
             </div>
 
+        </div>
 
-            <a
-                href="/movimentacoes/nova?produto_id={{ produto.id }}"
-                class="botao-principal">
 
-                + Registrar movimentação
+        <div class="tabela-container">
 
-            </a>
+            <table>
 
-        </section>
+                <thead>
 
+                    <tr>
 
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Quantidade</th>
+                        <th>Preço unit.</th>
+                        <th>Total</th>
+                        <th>Observação</th>
+                        <th>Registrado por</th>
 
-        <!-- =========================
-             RESUMO
-        ========================== -->
+                    </tr>
 
-        <section class="resumo">
+                </thead>
 
 
-            <!-- ESTOQUE -->
+                <tbody>
 
-            <div class="card-resumo">
+                    {% for m in movimentacoes %}
 
-                <span class="titulo-resumo">
-                    Estoque atual
-                </span>
+                    <tr>
 
-                <strong class="numero estoque">
-                    {{ produto.estoque_atual }}
-                </strong>
+                        <!-- DATA -->
 
-                <span class="descricao">
-                    unidades disponíveis
-                </span>
+                        <td>
 
-            </div>
+                            <span class="data">
 
+                                {{ m.criado_em.strftime('%d/%m/%Y') }}
 
+                            </span>
 
-            <!-- ENTRADAS -->
+                            <small>
 
-            <div class="card-resumo entrada">
+                                {{ m.criado_em.strftime('%H:%M') }}
 
-                <span class="titulo-resumo">
-                    Total de entradas
-                </span>
+                            </small>
 
-                <strong class="numero">
-                    + {{ total_entradas }}
-                </strong>
+                        </td>
 
-                <span class="descricao">
-                    unidades recebidas
-                </span>
 
-            </div>
+                        <!-- TIPO -->
 
+                        <td>
 
+                            {% if m.tipo.value == 'entrada' %}
 
-            <!-- SAÍDAS -->
+                                <span class="badge entrada-badge">
 
-            <div class="card-resumo saida">
-
-                <span class="titulo-resumo">
-                    Total de saídas
-                </span>
-
-                <strong class="numero">
-                    - {{ total_saidas }}
-                </strong>
-
-                <span class="descricao">
-                    unidades vendidas/retiradas
-                </span>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =========================
-             HISTÓRICO
-        ========================== -->
-
-        <section class="historico">
-
-            <div class="titulo-tabela">
-
-                <div>
-
-                    <h2>
-                        Movimentações
-                    </h2>
-
-                    <p>
-                        Registro de movimentações do produto
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="tabela-container">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Data</th>
-
-                            <th>Tipo</th>
-
-                            <th>Quantidade</th>
-
-                            <th>Preço unit.</th>
-
-                            <th>Total</th>
-
-                            <th>Observação</th>
-
-                            <th>Registrado por</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        {% for m in movimentacoes %}
-
-                        <tr>
-
-
-                            <!-- DATA -->
-
-                            <td>
-
-                                <span class="data">
-
-                                    {{ m.criado_em.strftime('%d/%m/%Y') }}
+                                    ▲ Entrada
 
                                 </span>
 
-                                <small>
+                            {% else %}
 
-                                    {{ m.criado_em.strftime('%H:%M') }}
+                                <span class="badge saida-badge">
 
-                                </small>
+                                    ▼ Saída
 
-                            </td>
+                                </span>
 
+                            {% endif %}
 
-
-                            <!-- TIPO -->
-
-                            <td>
-
-                                {% if m.tipo.value == 'entrada' %}
-
-                                    <span class="badge entrada-badge">
-
-                                        ▲ Entrada
-
-                                    </span>
-
-                                {% else %}
-
-                                    <span class="badge saida-badge">
-
-                                        ▼ Saída
-
-                                    </span>
-
-                                {% endif %}
-
-                            </td>
+                        </td>
 
 
+                        <!-- QUANTIDADE -->
 
-                            <!-- QUANTIDADE -->
+                        <td>
 
-                            <td>
+                            <strong>
+                                {{ m.quantidade }}
+                            </strong>
 
-                                <strong>
+                            un.
 
-                                    {{ m.quantidade }}
-
-                                </strong>
-
-                                un.
-
-                            </td>
+                        </td>
 
 
+                        <!-- PREÇO -->
 
-                            <!-- PREÇO -->
+                        <td>
 
-                            <td>
+                            R$
+
+                            {{ "%.2f"|format(
+                                m.preco_unitario
+                            ) }}
+
+                        </td>
+
+
+                        <!-- TOTAL -->
+
+                        <td>
+
+                            <strong>
 
                                 R$
 
                                 {{ "%.2f"|format(
-                                    m.preco_unitario
+                                    m.valor_total
                                 ) }}
 
-                            </td>
+                            </strong>
+
+                        </td>
 
 
+                        <!-- OBSERVAÇÃO -->
 
-                            <!-- TOTAL -->
+                        <td>
 
-                            <td>
+                            {% if m.observacao %}
 
-                                <strong>
+                                {{ m.observacao }}
 
-                                    R$
+                            {% else %}
 
-                                    {{ "%.2f"|format(
-                                        m.valor_total
-                                    ) }}
+                                <span class="vazio">
+                                    —
+                                </span>
 
-                                </strong>
+                            {% endif %}
 
-                            </td>
-
-
-
-                            <!-- OBSERVAÇÃO -->
-
-                            <td>
-
-                                {% if m.observacao %}
-
-                                    {{ m.observacao }}
-
-                                {% else %}
-
-                                    <span class="vazio">
-                                        —
-                                    </span>
-
-                                {% endif %}
-
-                            </td>
+                        </td>
 
 
+                        <!-- USUÁRIO -->
 
-                            <!-- USUÁRIO -->
+                        <td>
 
-                            <td>
+                            {% if m.usuario %}
 
-                                {% if m.usuario %}
+                                <span class="usuario">
 
-                                    <span class="usuario">
+                                    {{ m.usuario.nome }}
 
-                                        {{ m.usuario.nome }}
+                                </span>
 
-                                    </span>
+                            {% else %}
 
-                                {% else %}
+                                <span class="vazio">
+                                    —
+                                </span>
 
-                                    <span class="vazio">
-                                        —
-                                    </span>
+                            {% endif %}
 
-                                {% endif %}
+                        </td>
 
-                            </td>
+                    </tr>
 
-
-                        </tr>
-
-                        {% endfor %}
+                    {% endfor %}
 
 
+                    {% if not movimentacoes %}
 
-                        {% if not movimentacoes %}
+                    <tr>
 
-                        <tr>
+                        <td
+                            colspan="7"
+                            class="sem-registros">
 
-                            <td
-                                colspan="7"
-                                class="sem-registros">
+                            <div class="icone-vazio">
+                                📦
+                            </div>
 
-                                <div class="icone-vazio">
-                                    📦
-                                </div>
+                            <strong>
+                                Nenhuma movimentação registrada
+                            </strong>
 
-                                <strong>
-                                    Nenhuma movimentação registrada
-                                </strong>
+                            <p>
+                                Este produto ainda não possui
+                                movimentações.
+                            </p>
 
-                                <p>
-                                    Este produto ainda não possui
-                                    movimentações.
-                                </p>
+                        </td>
 
-                            </td>
+                    </tr>
 
-                        </tr>
+                    {% endif %}
 
-                        {% endif %}
+                </tbody>
 
-                    </tbody>
+            </table>
 
-                </table>
+        </div>
 
-            </div>
-
-        </section>
-
+    </section>
 
 
-        <!-- =========================
-             VOLTAR
-        ========================== -->
+    <!-- =========================
+         VOLTAR
+    ========================== -->
 
-        <a
-            href="/produtos/{{ produto.id }}"
-            class="voltar">
+    <a
+        href="/produtos/{{ produto.id }}"
+        class="voltar">
 
-            ← Voltar ao produto
+        ← Voltar ao produto
 
-        </a>
+    </a>
 
-    </main>
+</main>
 
-</body>
-
-</html>
+{% endblock %}

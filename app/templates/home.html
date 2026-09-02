@@ -165,14 +165,7 @@
             }).catch(err => alert('Erro ao finalizar venda.'));
         }
 
-        // Filtro por categoria
-        document.querySelectorAll('.categorias button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.categorias button').forEach(b => b.classList.remove('ativo'));
-                btn.classList.add('ativo');
-                filtrarProdutos();
-            });
-        });
+        
 
         function filtrarProdutos() {
             const categoriaAtiva = document.querySelector('.categorias button.ativo')?.dataset.categoria || 'todos';

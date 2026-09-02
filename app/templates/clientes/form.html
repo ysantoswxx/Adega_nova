@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 {% block title %}{{ "Editar" if editando else "Novo" }} Cliente — Adega Premium{% endblock %}
 =======
@@ -8,6 +9,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 >>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260
+=======
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+>>>>>>> Stashed changes
 
     <title>
         {{ "Editar" if editando else "Novo" }} Cliente — Nova Adega
@@ -16,10 +22,13 @@
 
 <body>
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 {% if erro %} <p style="color:red">{{ erro }}</p>
 {% endif %}
 =======
+=======
+>>>>>>> Stashed changes
     <h1>
         {{ "Editar cliente" if editando else "Novo cliente" }}
     </h1>
@@ -29,13 +38,17 @@
             {{ erro }}
         </p>
     {% endif %}
+<<<<<<< Updated upstream
 >>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260
+=======
+>>>>>>> Stashed changes
 
     <form
         action="{{ '/clientes/' + editando.id|string + '/editar' if editando else '/clientes/novo' }}"
         method="post"
     >
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 ```
 <label>Nome completo:
@@ -77,6 +90,8 @@
 <a href="/clientes">Cancelar</a>
 ```
 =======
+=======
+>>>>>>> Stashed changes
         <!-- Nome -->
         <label>
             Nome completo:
@@ -117,6 +132,7 @@
                 value="{{ editando.cpf if editando else (valores.cpf if valores else '') }}"
             >
         </label>
+<<<<<<< Updated upstream
 >>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260
 
         <br><br>
@@ -124,6 +140,11 @@
 <<<<<<< HEAD
 {% endblock %}
 =======
+=======
+
+        <br><br>
+
+>>>>>>> Stashed changes
         <button type="submit">
             {{ "Salvar alterações" if editando else "Cadastrar cliente" }}
         </button>
@@ -135,5 +156,9 @@
     </form>
 
 </body>
+<<<<<<< Updated upstream
 </html>
 >>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260
+=======
+</html>
+>>>>>>> Stashed changes

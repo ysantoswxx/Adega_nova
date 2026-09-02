@@ -1,7 +1,12 @@
+<<<<<<< Updated upstream
+=======
+<!-- templates/movimentacoes/index.html -->
+>>>>>>> Stashed changes
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+<<<<<<< Updated upstream
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Histórico de Movimentações — Adega Premium</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -244,9 +249,14 @@
             color: var(--accent);
         }
     </style>
+=======
+    <title>Adega Premium </title>
+>>>>>>> Stashed changes
 </head>
 <body>
+    <h1>Histórico de movimentações</h1>
 
+<<<<<<< Updated upstream
 <div class="container">
     <header>
         <span class="subtitulo">Controle de Estoque</span>
@@ -345,3 +355,86 @@
 
 </body>
 </html>
+=======
+    <!-- Filtros -->
+    <form method="get" action="/movimentacoes">
+        <select name="produto_id">
+            <option value="0">Todos os produtos</option>
+            {% for p in produtos %}
+                <option value="{{ p.id }}"
+                    {{ 'selected' if produto_id == p.id else '' }}>
+                    {{ p.nome }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="tipo">
+            <option value="">Todos os tipos</option>
+            <option value="entrada" {{ 'selected' if tipo == 'entrada' else '' }}>
+                Entrada
+            </option>
+            <option value="saida" {{ 'selected' if tipo == 'saida' else '' }}>
+                Saída
+            </option>
+        </select>
+
+        <button type="submit">Filtrar</button>
+
+        {% if produto_id or tipo %}
+            <a href="/movimentacoes">Limpar</a>
+        {% endif %}
+    </form>
+
+    <a href="/movimentacoes/nova">+ Registrar movimentação</a>
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Produto</th>
+                <th>Tipo</th>
+                <th>Quantidade</th>
+                <th>Preço unit.</th>
+                <th>Total</th>
+                <th>Observação</th>
+                <th>Registrado por</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in movimentacoes %}
+            <tr>
+                <td>{{ m.criado_em.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>
+                    <a href="/produtos/{{ m.produto_id }}">
+                        {{ m.produto.nome }}
+                    </a>
+                </td>
+                <td>
+                    {% if m.tipo.value == 'entrada' %}
+                        <span style="color:green">▲ Entrada</span>
+                    {% else %}
+                        <span style="color:red">▼ Saída</span>
+                    {% endif %}
+                </td>
+                <td>{{ m.quantidade }}</td>
+                <td>R$ {{ "%.2f"|format(m.preco_unitario) }}</td>
+                <td>R$ {{ "%.2f"|format(m.valor_total) }}</td>
+                <td>{{ m.observacao or "—" }}</td>
+                <td>{{ m.usuario.nome if m.usuario else "—" }}</td>
+            </tr>
+            {% endfor %}
+
+            {% if not movimentacoes %}
+            <tr>
+                <td colspan="8" style="text-align:center">
+                    Nenhuma movimentação encontrada.
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <p><a href="/">← Dashboard</a></p>
+</body>
+</html>
+>>>>>>> Stashed changes

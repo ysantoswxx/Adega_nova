@@ -6,6 +6,7 @@
     <title>Clientes — Nova Adega</title>
 </head>
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 {% block title %}Clientes — Adega Premium{% endblock %}
 =======
@@ -43,11 +44,21 @@
         <p style="color: green;">Cliente cadastrado!</p>
     {% endif %}
 >>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260
+=======
+<body>
+
+    <h1>Clientes</h1>
+
+    {% if request.query_params.get('criado') == 'ok' %}
+        <p style="color: green;">Cliente cadastrado!</p>
+    {% endif %}
+>>>>>>> Stashed changes
 
     {% if request.query_params.get('editado') == 'ok' %}
         <p style="color: green;">Cliente atualizado!</p>
     {% endif %}
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 <br>
 
@@ -120,6 +131,8 @@
 </tbody>
 ```
 =======
+=======
+>>>>>>> Stashed changes
     <!-- Busca -->
     <form method="get" action="/clientes">
 
@@ -137,6 +150,7 @@
         {% endif %}
 
     </form>
+<<<<<<< Updated upstream
 >>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260
 
     <br>
@@ -148,6 +162,11 @@
 
 {% endblock %}
 =======
+=======
+
+    <br>
+
+>>>>>>> Stashed changes
     <a href="/clientes/novo">+ Novo cliente</a>
 
     <br><br>
@@ -228,5 +247,9 @@
     </p>
 
 </body>
+<<<<<<< Updated upstream
 </html>
 >>>>>>> 02735da95c442140c2d5dd1bd7a672a78b30c260
+=======
+</html>
+>>>>>>> Stashed changes

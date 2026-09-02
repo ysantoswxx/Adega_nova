@@ -68,7 +68,7 @@ def form_novo_produto(
     db: Session = Depends(get_db),
     admin = Depends(get_admin)
 ):
-    categorias = db.query(Categoria).filter(Categoria.ativo == True).all()
+    categorias = db.query(Categoria).filter(Categoria.ativa == True).all()
 
     return templates.TemplateResponse(
         request,
@@ -93,7 +93,7 @@ async def criar_produto(
     db: Session        = Depends(get_db),
     admin              = Depends(get_admin)
 ):
-    categorias = db.query(Categoria).filter(Categoria.ativo == True).all()
+    categorias = db.query(Categoria).filter(Categoria.ativa == True).all()
 
     # Verifica duplicidade de nome
     # ilike() para comparação case-insensitive, evitando produtos "Camiseta" e "camiseta".

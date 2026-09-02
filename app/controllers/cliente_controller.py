@@ -2,7 +2,7 @@
 # ============================================================
 
 from fastapi import APIRouter, Depends, Request, Form
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -14,13 +14,16 @@ router = APIRouter(prefix="/clientes", tags=["Clientes"])
 templates = Jinja2Templates(directory="app/templates")
 
 
+# ============================================================
+# LISTAR CLIENTES
+# ============================================================
+
 @router.get("/")
 def listar_clientes(
     request: Request,
     busca: str = "",
-    apenas_associados: bool = False,
     db: Session = Depends(get_db),
-    admin = Depends(get_admin)
+    admin=Depends(get_admin)
 ):
     query = db.query(Cliente)
 
@@ -30,50 +33,54 @@ def listar_clientes(
             Cliente.matricula.ilike(f"%{busca}%")
         )
 
-    if apenas_associados:
-        query = query.filter(Cliente.is_associado == True)
-
     clientes = query.order_by(Cliente.nome).all()
-
-    total_associados = db.query(Cliente).filter(
-        Cliente.is_associado == True,
-        Cliente.ativo == True
-    ).count()
 
     return templates.TemplateResponse(
         request,
         "clientes/index.html",
         {
-            "request":           request,
-            "usuario":           admin,
-            "clientes":          clientes,
-            "busca":             busca,
-            "apenas_associados": apenas_associados,
-            "total_associados":  total_associados,
+            "request": request,
+            "usuario": admin,
+            "clientes": clientes,
+            "busca": busca,
         }
     )
 
 
+# ============================================================
+# NOVO CLIENTE — FORMULÁRIO
+# ============================================================
+
 @router.get("/novo")
-def form_novo(request: Request, admin = Depends(get_admin)):
+def form_novo(
+    request: Request,
+    admin=Depends(get_admin)
+):
     return templates.TemplateResponse(
         request,
         "clientes/form.html",
-        {"request": request, "usuario": admin, "editando": None}
+        {
+            "request": request,
+            "usuario": admin,
+            "editando": None
+        }
     )
 
+
+# ============================================================
+# CRIAR CLIENTE
+# ============================================================
 
 @router.post("/novo")
 def criar(
     request: Request,
-    nome: str          = Form(...),
-    matricula: str     = Form(""),
-    telefone: str      = Form(""),
-    is_associado: bool = Form(False),
-    db: Session        = Depends(get_db),
-    admin              = Depends(get_admin)
+    nome: str = Form(...),
+    matricula: str = Form(""),
+    telefone: str = Form(""),
+    db: Session = Depends(get_db),
+    admin=Depends(get_admin)
 ):
-    # Verifica duplicidade de matrícula (apenas se preenchida)
+    # Verifica duplicidade de matrícula
     if matricula:
         existente = db.query(Cliente).filter(
             Cliente.matricula == matricula.strip()
@@ -84,89 +91,133 @@ def criar(
                 request,
                 "clientes/form.html",
                 {
-                    "request":  request,
-                    "usuario":  admin,
+                    "request": request,
+                    "usuario": admin,
                     "editando": None,
-                    "erro":     f"Matrícula {matricula} já cadastrada.",
-                    "valores":  {
-                        "nome": nome, "matricula": matricula,
-                        "telefone": telefone, "is_associado": is_associado
+                    "erro": f"Matrícula {matricula} já cadastrada.",
+                    "valores": {
+                        "nome": nome,
+                        "matricula": matricula,
+                        "telefone": telefone
                     }
                 },
                 status_code=400
             )
 
-    db.add(Cliente(
-        nome         = nome.strip(),
-        matricula    = matricula.strip() or None,
-        telefone     = telefone.strip() or None,
-        is_associado = is_associado,
-    ))
+    cliente = Cliente(
+        nome=nome.strip(),
+        matricula=matricula.strip() or None,
+        telefone=telefone.strip() or None,
+    )
+
+    db.add(cliente)
     db.commit()
 
-    return RedirectResponse(url="/clientes?criado=ok", status_code=302)
+    return RedirectResponse(
+        url="/clientes?criado=ok",
+        status_code=302
+    )
 
+
+# ============================================================
+# EDITAR CLIENTE — FORMULÁRIO
+# ============================================================
 
 @router.get("/{cliente_id}/editar")
 def form_editar(
     cliente_id: int,
     request: Request,
     db: Session = Depends(get_db),
-    admin = Depends(get_admin)
+    admin=Depends(get_admin)
 ):
-    editando = db.query(Cliente).filter(Cliente.id == cliente_id).first()
+    editando = db.query(Cliente).filter(
+        Cliente.id == cliente_id
+    ).first()
+
     if not editando:
-        return RedirectResponse(url="/clientes", status_code=302)
+        return RedirectResponse(
+            url="/clientes",
+            status_code=302
+        )
 
     return templates.TemplateResponse(
         request,
         "clientes/form.html",
-        {"request": request, "usuario": admin, "editando": editando}
+        {
+            "request": request,
+            "usuario": admin,
+            "editando": editando
+        }
     )
 
+
+# ============================================================
+# EDITAR CLIENTE
+# ============================================================
 
 @router.post("/{cliente_id}/editar")
 def editar(
     cliente_id: int,
-    nome: str          = Form(...),
-    matricula: str     = Form(""),
-    telefone: str      = Form(""),
-    is_associado: bool = Form(False),
-    db: Session        = Depends(get_db),
-    admin              = Depends(get_admin)
+    nome: str = Form(...),
+    matricula: str = Form(""),
+    telefone: str = Form(""),
+    db: Session = Depends(get_db),
+    admin=Depends(get_admin)
 ):
-    editando = db.query(Cliente).filter(Cliente.id == cliente_id).first()
-    if not editando:
-        return RedirectResponse(url="/clientes", status_code=302)
+    editando = db.query(Cliente).filter(
+        Cliente.id == cliente_id
+    ).first()
 
+    if not editando:
+        return RedirectResponse(
+            url="/clientes",
+            status_code=302
+        )
+
+    # Verifica conflito de matrícula
     if matricula:
         conflito = db.query(Cliente).filter(
             Cliente.matricula == matricula.strip(),
             Cliente.id != cliente_id
         ).first()
+
         if conflito:
             return RedirectResponse(
                 url=f"/clientes/{cliente_id}/editar?erro=matricula",
                 status_code=302
             )
 
-    editando.nome         = nome.strip()
-    editando.matricula    = matricula.strip() or None
-    editando.telefone     = telefone.strip() or None
-    editando.is_associado = is_associado
+    editando.nome = nome.strip()
+    editando.matricula = matricula.strip() or None
+    editando.telefone = telefone.strip() or None
+
     db.commit()
 
-    return RedirectResponse(url="/clientes?editado=ok", status_code=302)
+    return RedirectResponse(
+        url="/clientes?editado=ok",
+        status_code=302
+    )
 
+
+# ============================================================
+# ATIVAR / DESATIVAR CLIENTE
+# ============================================================
 
 @router.post("/{cliente_id}/toggle-ativo")
 def toggle_ativo(
     cliente_id: int,
     db: Session = Depends(get_db),
-    admin = Depends(get_admin)
+    admin=Depends(get_admin)
 ):
-    cliente = db.query(Cliente).filter(Cliente.id == cliente_id).first()
+    cliente = db.query(Cliente).filter(
+        Cliente.id == cliente_id
+    ).first()
+
     if cliente:
         cliente.ativo = not cliente.ativo
         db.commit()
-    return RedirectResponse(url="/clientes", status_code=302)
+
+    return RedirectResponse(
+        url="/clientes",
+        status_code=302
+    )

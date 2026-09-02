@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {{ "Editar" if editando else "Novo" }} Cliente — Nova Adega
+    </title>
+</head>
+
+<body>
+
+    <h1>
+        {{ "Editar cliente" if editando else "Novo cliente" }}
+    </h1>
+
+    {% if erro %}
+        <p style="color: red;">
+            {{ erro }}
+        </p>
+    {% endif %}
+
+    <form
+        action="{{ '/clientes/' + editando.id|string + '/editar' if editando else '/clientes/novo' }}"
+        method="post"
+    >
+
+        <!-- Nome -->
+        <label>
+            Nome completo:
+
+            <input
+                type="text"
+                name="nome"
+                required
+                autofocus
+                value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
+            >
+        </label>
+
+        <br><br>
+
+        <!-- Telefone -->
+        <label>
+            Telefone (opcional):
+
+            <input
+                type="text"
+                name="telefone"
+                placeholder="Ex: (11) 99999-9999"
+                value="{{ editando.telefone if editando else (valores.telefone if valores else '') }}"
+            >
+        </label>
+
+        <br><br>
+
+        <!-- CPF -->
+        <label>
+            CPF (opcional):
+
+            <input
+                type="text"
+                name="cpf"
+                placeholder="Ex: 000.000.000-00"
+                value="{{ editando.cpf if editando else (valores.cpf if valores else '') }}"
+            >
+        </label>
+
+        <br><br>
+
+        <button type="submit">
+            {{ "Salvar alterações" if editando else "Cadastrar cliente" }}
+        </button>
+
+        <a href="/clientes">
+            Cancelar
+        </a>
+
+    </form>
+
+</body>
+</html>

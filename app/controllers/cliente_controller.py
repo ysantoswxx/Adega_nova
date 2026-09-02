@@ -71,52 +71,6 @@ def form_novo(
 # CRIAR CLIENTE
 # ============================================================
 
-@router.post("/novo")
-def criar(
-    request: Request,
-    nome: str = Form(...),
-    matricula: str = Form(""),
-    telefone: str = Form(""),
-    db: Session = Depends(get_db),
-    admin=Depends(get_admin)
-):
-    # Verifica duplicidade de matrícula
-    if matricula:
-        existente = db.query(Cliente).filter(
-            Cliente.matricula == matricula.strip()
-        ).first()
-
-        if existente:
-            return templates.TemplateResponse(
-                request,
-                "clientes/form.html",
-                {
-                    "request": request,
-                    "usuario": admin,
-                    "editando": None,
-                    "erro": f"Matrícula {matricula} já cadastrada.",
-                    "valores": {
-                        "nome": nome,
-                        "matricula": matricula,
-                        "telefone": telefone
-                    }
-                },
-                status_code=400
-            )
-
-    cliente = Cliente(
-        nome=nome.strip(),
-        matricula=matricula.strip() or None,
-        telefone=telefone.strip() or None,
-    )
-
-    db.add(cliente)
-    db.commit()
-
-    return RedirectResponse(
-        url="/clientes?criado=ok",
-        status_code=302
-    )
 
 
 # ============================================================
